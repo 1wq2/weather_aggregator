@@ -46,7 +46,6 @@ class WedApi(models.Model):
     api_id = models.AutoField(primary_key=True, default=None)
     name = models.CharField(max_length=255)
     url = models.CharField(max_length=255)
-    querystring = models.CharField(max_length=1000)
     headers = models.CharField(max_length=2000)
 
     def __str__(self):

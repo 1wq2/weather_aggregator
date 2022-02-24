@@ -10,28 +10,27 @@ User = get_user_model()
 
 
 def get_weather(request, user_pk):
-    # if 'name' in request.GET:        if 'city' in querystring
+    if 'city' in request.GET:
 
-    # city = 'London'
+        user = get_object(User, user_pk)
+        api = WedApi(api_id=user.user_api_id)
 
-    user = get_object(User, user_pk)
+        city = request.GET['city']
 
-    api = WedApi(api_id=user.user_api_id)
+        params = {
+            'q': f'{city},uk',
+            'units': 'metric',
+        }
+        response = requests.request("GET", api.url, headers=api.headers, params=params)
+        temp = response.txt['main']['temp']
 
-    params = {
-        'q': 'London,uk',
-        'units': 'metric',
-    }
-    response = requests.request("GET", api.url, headers=api.headers, params=params)
-    temp = response.txt['main']['temp']
+        wed_query = WedQuery(
+            user=user.name,
+            city='London',
+            temp=temp
+        )
 
-    wed_query = WedQuery(
-        user=user.name,
-        city='London',
-        temp=temp
-    )
-
-    wed_query.save()
+        wed_query.save()
 
     return render(request, 'weather/weather.html', {'data': temp})
 
